@@ -10,8 +10,8 @@ function DCanvas(el) {
 
     let is_mouse_down = false;
 
-    canv.width = 500;
-    canv.height = 500;
+    el.width = 500;
+    el.height = 500;
 
     this.drawLine = function (x1, y1, x2, y2, color = 'green') {
         ctx.beginPath();
@@ -33,12 +33,12 @@ function DCanvas(el) {
     };
 
     this.clear = function () {
-        ctx.clearRect(0,0, canv.width, canv.height);
+        ctx.clearRect(0,0, el.width, el.height);
     };
 
     this.drawGrid = function() {
-        const w = canv.width;
-        const h = canv.height;
+        const w = el.width;
+        const h = el.height;
         const p = w / pixel;
 
         const xStep = w / p;
@@ -53,6 +53,50 @@ function DCanvas(el) {
         {
             this.drawLine(0, y, w, y);
         }
+    };
+
+    this.calculate = function(draw = false) {
+        const w = el.width;
+        const h = el.height;
+        const p = w / pixel;
+
+        const xStep = w / p;
+        const yStep = h / p;
+
+        const vector = [];
+        let __draw = [];
+
+        for (let x = 0; x < w; x += xStep) {
+            for(let y = 0; y < h; y += yStep) {
+                const data = ctx.getImageData(x, y, xStep, yStep);
+
+                let nonEmptyPixelsCount = 0;
+                for( i = 0; i < data.data.length; i += 10 ) {
+                    const isEmpty = data.data[i] === 0;
+
+                    if( !isEmpty ) {
+                        nonEmptyPixelsCount += 1;
+                    }
+                }
+
+                if( nonEmptyPixelsCount > 1 && draw ) {
+                    __draw.push([x, y, xStep, yStep]);
+                }
+
+                vector.push(nonEmptyPixelsCount > 1 ? 1 : 0);
+            }
+        }
+
+        if(draw) {
+            this.clear();
+            this.drawGrid();
+
+            for(_d in __draw) {
+                this.drawCell( __draw[_d][0], __draw[_d][1], __draw[_d][2], __draw[_d][3] );
+            }
+        }
+
+        return vector;
     };
     
     el.addEventListener('mousedown', function () {
