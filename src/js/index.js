@@ -92,7 +92,7 @@ function DCanvas(el) {
             this.drawGrid();
 
             for(_d in __draw) {
-                this.drawCell( __draw[_d][0], __draw[_d][1], __draw[_d][2], __draw[_d][3] );
+                this.drawCell(__draw[_d][0], __draw[_d][1], __draw[_d][2], __draw[_d][3]);
             }
         }
 
