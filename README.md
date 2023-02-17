@@ -2,7 +2,7 @@
 ```bash
 docker run -it --rm -u $(id -u ${USER}):$(id -g ${USER}) -v ${PWD}:/app node:11 /bin/sh
 ```
-inside docker container run
+inside running docker container run
 ```bash
 cd app && yarn install
 ```
